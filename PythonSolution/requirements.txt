@@ -1,0 +1,1 @@
+numpy, csv, smtplib, email.message
