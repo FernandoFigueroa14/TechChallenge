@@ -6,10 +6,11 @@ import csv
 # import numpy as np
 import smtplib
 import email.message
+import pymysql
 
 #input filename
 # filename = input("Account file (.csv): ")
-filename = 'account1.csv'
+filename = 'account2'
 
 #variables
 colNames = []
@@ -23,7 +24,7 @@ months = []
 meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 # reading csv file
-with open('./tests/'+filename, 'r') as csvfile:
+with open('./tests/'+filename+'.csv', 'r') as csvfile:
     # creating a csv reader object
     csvreader = csv.reader(csvfile)
 
@@ -41,7 +42,7 @@ for col in colNames:
         array.append(row.pop(0))
     account[col] = array
 
-#print(account)
+print(account)
 #print(account['Transaction'])
 
 for t in account['Transaction']:
@@ -108,3 +109,19 @@ server.login(msg['From'], password)
 
 #Send email
 server.sendmail(msg['From'], [msg['To']], msg.as_string())
+
+#Data Base Conection
+connection = pymysql.connect( host='127.0.0.1', port= 3307, user= 'ferfigue14', passwd='root', db='challenge' )
+cursor = connection.cursor()
+table = 'CREATE TABLE IF NOT EXISTS {tableName}(id BIGINT(255), date_ VARCHAR(100), transactions FLOAT)'.format(tableName=filename)
+cursor.execute(table)
+print('Tabla creada')
+
+for i in range(len(account['Id'])):
+    query = "INSERT INTO {tableName}(id, date_, transactions) VALUES ({id}, {date}, {transactions});".format(tableName=filename, id=account['Id'][i], date=account['Date'][i], transactions=account['Transaction'][i])
+    cursor.execute(query)
+connection.commit()
+
+print('Base de datos actualizada')
+
+connection.close()
