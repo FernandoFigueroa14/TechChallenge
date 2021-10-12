@@ -1,12 +1,16 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.8-slim-buster
+FROM python:3.11.0a1-bullseye
 
-WORKDIR /
+#Directory for our application
+WORKDIR /app
 
-COPY requirements.txt ./requirements.txt
-RUN pip3 install -r requirements.txt
+#install requirements
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
+#Copy our source code
 COPY . .
 
-CMD [ "python3", "./challenge.py"]
+#Run script
+CMD [ "python3", "challenge.py"]

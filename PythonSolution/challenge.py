@@ -3,12 +3,13 @@
 
 #import libraries
 import csv
-import numpy as np
+# import numpy as np
 import smtplib
 import email.message
 
 #input filename
-filename = input("Account file (.csv): ")
+# filename = input("Account file (.csv): ")
+filename = 'account1.csv'
 
 #variables
 colNames = []
@@ -22,7 +23,7 @@ months = []
 meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 # reading csv file
-with open('../tests/'+filename, 'r') as csvfile:
+with open('./tests/'+filename, 'r') as csvfile:
     # creating a csv reader object
     csvreader = csv.reader(csvfile)
 
@@ -56,8 +57,10 @@ for t in account['Transaction']:
         debit.append(float(t))
 
 #credit and debit averages using numpy
-creditAverage = np.average(credit)
-debitAverage = np.average(debit)
+# creditAverage = np.average(credit)
+# debitAverage = np.average(debit)
+creditAverage = sum(credit)/len(credit)
+debitAverage = sum(debit)/len(debit)
 
 #
 for mes in account['Date']:
