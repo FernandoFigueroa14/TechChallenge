@@ -3,14 +3,14 @@
 
 #import libraries
 import csv
-# import numpy as np
 import smtplib
 import email.message
 import pymysql
+# import numpy as np
 
 #input filename
 # filename = input("Account file (.csv): ")
-filename = 'account4'
+filename = 'account3'
 
 #variables
 colNames = []
@@ -24,7 +24,7 @@ months = []
 meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 #Data Base Conection
-connection = pymysql.connect( host='127.0.0.1', port= 3307, user= 'ferfigue14', passwd='root', db='challenge' )
+connection = pymysql.connect( host='personalDB.ccr63migrrcg.us-east-1.rds.amazonaws.com', port= 3306, user= 'admin', passwd='BasededatosP', db='challenge' )
 cursor = connection.cursor()
 
 # reading csv file
@@ -73,9 +73,7 @@ for col in colNames:
         array.append(row.pop(0))
     account[col] = array
 
-#print(account)
-#print(account['Transaction'])
-
+#Transactions
 for t in account['transaction']:
     #Calculations for the total Balance
     totalBalance = totalBalance + float(t)
@@ -91,19 +89,20 @@ for t in account['transaction']:
 #credit and debit averages using numpy
 # creditAverage = np.average(credit)
 # debitAverage = np.average(debit)
+
+#Averages
 creditAverage = sum(credit)/len(credit)
 debitAverage = sum(debit)/len(debit)
 
-#
+#List with all the transacctions dates(months)
 for mes in account['date']:
     months.append(int(mes[0:mes.find('/')])-1)
 
-# print(months)
-
+#Number of transactions per month
 for i in range(12):
     transactionMonth[meses[i]] = months.count(i)
 
-# print(transactionMonth)
+#String with the months with one or more transactions
 monthTransactions = ''
 for mes in meses:
     if(transactionMonth[mes] != 0):
