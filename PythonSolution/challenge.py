@@ -10,7 +10,7 @@ import pymysql
 
 #input filename
 # filename = input("Account file (.csv): ")
-filename = 'account2'
+filename = 'account4'
 
 #variables
 colNames = []
@@ -23,17 +23,48 @@ transactionMonth = {}
 months = []
 meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
+#Data Base Conection
+connection = pymysql.connect( host='127.0.0.1', port= 3307, user= 'ferfigue14', passwd='root', db='challenge' )
+cursor = connection.cursor()
+
 # reading csv file
 with open('./tests/'+filename+'.csv', 'r') as csvfile:
     # creating a csv reader object
     csvreader = csv.reader(csvfile)
 
     # extracting column names through first row
-    colNames = next(csvreader)
+    colName = next(csvreader)
+    key = ', '.join(colName)
+
+    #Transform to lower case all the columns names
+    colNames = []
+    for col in colName:
+        colNames.append(col.lower())
+
+    #Extracting columns of the table from the array of the names of the columns of the .csv
+    columns = ''
+    for column in colNames:
+        if(column == 'id'):
+            columns = columns + column + ' BIGINT, '
+        elif(column == 'transaction'):
+            columns = columns + column + ' FLOAT, '
+        else:
+            columns = columns + column + ' VARCHAR(1000), '
+
+    table = 'CREATE TABLE IF NOT EXISTS {tableName}({columns})'.format(tableName=filename, columns=columns[:-2])
+    cursor.execute(table)
+    print('Tabla creada')
 
     # extracting each data row one by one
     for row in csvreader:
         rows.append(row)
+        query = "INSERT INTO {tableName}({key}) VALUES ('{value}');".format(tableName=filename, key=key.lower(), value="', '".join(row))
+        cursor.execute(query)
+    connection.commit()
+
+    print('Base de datos actualizada')
+
+    connection.close()
 
 #Dictionary with all the data of each column
 for col in colNames:
@@ -42,10 +73,10 @@ for col in colNames:
         array.append(row.pop(0))
     account[col] = array
 
-print(account)
+#print(account)
 #print(account['Transaction'])
 
-for t in account['Transaction']:
+for t in account['transaction']:
     #Calculations for the total Balance
     totalBalance = totalBalance + float(t)
 
@@ -64,7 +95,7 @@ creditAverage = sum(credit)/len(credit)
 debitAverage = sum(debit)/len(debit)
 
 #
-for mes in account['Date']:
+for mes in account['date']:
     months.append(int(mes[0:mes.find('/')])-1)
 
 # print(months)
@@ -108,20 +139,4 @@ server.starttls()
 server.login(msg['From'], password)
 
 #Send email
-server.sendmail(msg['From'], [msg['To']], msg.as_string())
-
-#Data Base Conection
-connection = pymysql.connect( host='127.0.0.1', port= 3307, user= 'ferfigue14', passwd='root', db='challenge' )
-cursor = connection.cursor()
-table = 'CREATE TABLE IF NOT EXISTS {tableName}(id BIGINT(255), date_ VARCHAR(100), transactions FLOAT)'.format(tableName=filename)
-cursor.execute(table)
-print('Tabla creada')
-
-for i in range(len(account['Id'])):
-    query = "INSERT INTO {tableName}(id, date_, transactions) VALUES ({id}, {date}, {transactions});".format(tableName=filename, id=account['Id'][i], date=account['Date'][i], transactions=account['Transaction'][i])
-    cursor.execute(query)
-connection.commit()
-
-print('Base de datos actualizada')
-
-connection.close()
+#server.sendmail(msg['From'], [msg['To']], msg.as_string())
