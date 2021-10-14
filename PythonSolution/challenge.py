@@ -139,4 +139,4 @@ server.starttls()
 server.login(msg['From'], password)
 
 #Send email
-#server.sendmail(msg['From'], [msg['To']], msg.as_string())
+server.sendmail(msg['From'], [msg['To']], msg.as_string())
