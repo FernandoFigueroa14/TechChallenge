@@ -1,5 +1,9 @@
 id,Date,TraNsaCtiOn,Concept,Day
-0,7/15,+60.5,Cinema,Friday
-1,7/28,-10.3,Oxxo,Sunday
-2,8/2,-20.46,Tacos,Tuesday
-3,8/13,+10,Super,Monday
+0,8/15,+60.5,TicketMaster,Friday
+1,8/28,-10.3,Sushi,Sunday
+2,4/2,-20.46,Party,Tuesday
+3,2/13,+10,Uber,Monday
+4,1/15,+12.5,Oxxo,Wednesday
+5,1/28,-70.3,Cinema,Thursday
+6,5/2,-41.46,Liverpool,Saturday
+7,12/13,+13,Tacos,Friday
