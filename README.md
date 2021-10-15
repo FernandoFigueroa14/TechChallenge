@@ -75,8 +75,10 @@ _The info contained in the columns is essential for the correct behaviour of the
 *email.message - Email content
 *PyMySQL - Connection with the Data Base
 ```
-* Docker
-*HTML5
+* Docker - Testing Environment
+*HTML5 - Email content
+*MySQL - DataBase
+*AWS RDS - DataBase
 ## Versioning 📌
 
 [Git](https://git-scm.com/) was used for the version control.
