@@ -10,7 +10,7 @@ import pymysql
 
 #input filename
 # filename = input("Account file (.csv): ")
-filename = 'account3'
+# filename = 'account3'
 
 #variables
 colNames = []
