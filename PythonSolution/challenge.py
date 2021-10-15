@@ -12,130 +12,137 @@ import pymysql
 # filename = input("Account file (.csv): ")
 # filename = 'account3'
 
-#variables
-colNames = []
-rows = []
-account = {}
-credit = []
-debit = []
-totalBalance = 0
-transactionMonth = {}
-months = []
-meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-#Data Base Conection
-connection = pymysql.connect( host='personalDB.ccr63migrrcg.us-east-1.rds.amazonaws.com', port= 3306, user= 'admin', passwd='BasededatosP', db='challenge' )
-cursor = connection.cursor()
-
-# reading csv file
-with open('./tests/'+filename+'.csv', 'r') as csvfile:
-    # creating a csv reader object
-    csvreader = csv.reader(csvfile)
-
-    # extracting column names through first row
-    colName = next(csvreader)
-    key = ', '.join(colName)
-
-    #Transform to lower case all the columns names
+def challenge(filename):
+    #variables
     colNames = []
-    for col in colName:
-        colNames.append(col.lower())
+    rows = []
+    account = {}
+    credit = []
+    debit = []
+    totalBalance = 0
+    transactionMonth = {}
+    months = []
+    meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-    #Extracting columns of the table from the array of the names of the columns of the .csv
-    columns = ''
-    for column in colNames:
-        if(column == 'id'):
-            columns = columns + column + ' BIGINT, '
-        elif(column == 'transaction'):
-            columns = columns + column + ' FLOAT, '
-        else:
-            columns = columns + column + ' VARCHAR(1000), '
+    #Data Base Conection
+    connection = pymysql.connect( host='personalDB.ccr63migrrcg.us-east-1.rds.amazonaws.com', port= 3306, user= 'admin', passwd='BasededatosP', db='challenge' )
+    cursor = connection.cursor()
 
-    table = 'CREATE TABLE IF NOT EXISTS {tableName}({columns})'.format(tableName=filename, columns=columns[:-2])
-    cursor.execute(table)
-    print('Tabla creada')
+    # reading csv file
+    with open('./tests/'+filename+'.csv', 'r') as csvfile:
+        # creating a csv reader object
+        csvreader = csv.reader(csvfile)
 
-    # extracting each data row one by one
-    for row in csvreader:
-        rows.append(row)
-        query = "INSERT INTO {tableName}({key}) VALUES ('{value}');".format(tableName=filename, key=key.lower(), value="', '".join(row))
-        cursor.execute(query)
-    connection.commit()
+        # extracting column names through first row
+        colName = next(csvreader)
+        key = ', '.join(colName)
 
-    print('Base de datos actualizada')
+        #Transform to lower case all the columns names
+        colNames = []
+        for col in colName:
+            colNames.append(col.lower())
 
-    connection.close()
+        #Extracting columns of the table from the array of the names of the columns of the .csv
+        columns = ''
+        for column in colNames:
+            if(column == 'id'):
+                columns = columns + column + ' BIGINT, '
+            elif(column == 'transaction'):
+                columns = columns + column + ' FLOAT, '
+            else:
+                columns = columns + column + ' VARCHAR(1000), '
 
-#Dictionary with all the data of each column
-for col in colNames:
-    array = []
-    for row in rows:
-        array.append(row.pop(0))
-    account[col] = array
+        table = 'CREATE TABLE IF NOT EXISTS {tableName}({columns})'.format(tableName=filename, columns=columns[:-2])
+        cursor.execute(table)
+        print('Tabla creada')
 
-#Transactions
-for t in account['transaction']:
-    #Calculations for the total Balance
-    totalBalance = totalBalance + float(t)
+        # extracting each data row one by one
+        for row in csvreader:
+            rows.append(row)
+            query = "INSERT INTO {tableName}({key}) VALUES ('{value}');".format(tableName=filename, key=key.lower(), value="', '".join(row))
+            cursor.execute(query)
+        connection.commit()
 
-    # Array for all the credit transactions
-    if(t[0] == '+'):
-        credit.append(float(t))
+        print('Base de datos actualizada')
 
-    # Array for all the debit transactions
-    elif(t[0] == '-'):
-        debit.append(float(t))
+        connection.close()
 
-#credit and debit averages using numpy
-# creditAverage = np.average(credit)
-# debitAverage = np.average(debit)
+    #Dictionary with all the data of each column
+    for col in colNames:
+        array = []
+        for row in rows:
+            array.append(row.pop(0))
+        account[col] = array
 
-#Averages
-creditAverage = sum(credit)/len(credit)
-debitAverage = sum(debit)/len(debit)
+    #Transactions
+    for t in account['transaction']:
+        #Calculations for the total Balance
+        totalBalance = totalBalance + float(t)
 
-#List with all the transacctions dates(months)
-for mes in account['date']:
-    months.append(int(mes[0:mes.find('/')])-1)
+        # Array for all the credit transactions
+        if(t[0] == '+'):
+            credit.append(float(t))
 
-#Number of transactions per month
-for i in range(12):
-    transactionMonth[meses[i]] = months.count(i)
+        # Array for all the debit transactions
+        elif(t[0] == '-'):
+            debit.append(float(t))
 
-#String with the months with one or more transactions
-monthTransactions = ''
-for mes in meses:
-    if(transactionMonth[mes] != 0):
-        monthTransactions = monthTransactions + 'Number of transactions in ' + mes + ': ' + str(transactionMonth[mes]) + '<br>'
+    #credit and debit averages using numpy
+    # creditAverage = np.average(credit)
+    # debitAverage = np.average(debit)
 
-#Important information
-print('Total Balanca is: ', totalBalance)
-#print(credit)
-print('Average debit amount: ', debitAverage)
-#print(debit)
-print('Average credit amount: ',creditAverage)
-print(monthTransactions)
+    #Averages
+    creditAverage = sum(credit)/len(credit)
+    debitAverage = sum(debit)/len(debit)
+
+    #List with all the transacctions dates(months)
+    for mes in account['date']:
+        months.append(int(mes[0:mes.find('/')])-1)
+
+    #Number of transactions per month
+    for i in range(12):
+        transactionMonth[meses[i]] = months.count(i)
+
+    #String with the months with one or more transactions
+    monthTransactions = ''
+    for mes in meses:
+        if(transactionMonth[mes] != 0):
+            monthTransactions = monthTransactions + 'Number of transactions in ' + mes + ': <i>' + str(transactionMonth[mes]) + '</i><br>'
+
+    #Important information
+    print('Total Balanca is: ', totalBalance)
+    #print(credit)
+    print('Average debit amount: ', debitAverage)
+    #print(debit)
+    print('Average credit amount: ',creditAverage)
+    print(monthTransactions)
 
 
-#Opening Email Template
-email_content = open('email.html', 'r').read().format(totalBalance = totalBalance, monthTransactions = monthTransactions, debitAverage = debitAverage, creditAverage = creditAverage)
+    #Opening Email Template
+    email_content = open('email.html', 'r').read().format(totalBalance = totalBalance, monthTransactions = monthTransactions, debitAverage = debitAverage, creditAverage = creditAverage)
 
-#Email configuration
-msg = email.message.Message()
-msg['Subject'] = 'Prueba 1'
+    #Email configuration
+    msg = email.message.Message()
+    msg['Subject'] = 'Prueba 1'
 
-msg['From'] = 'storichallenge@gmail.com'
-msg['To'] = 'A01746139@itesm.mx'
-password = "sendEmail123"
-msg.add_header('Content-Type', 'text/html')
-msg.set_payload(email_content)
+    msg['From'] = 'storichallenge@gmail.com'
+    msg['To'] = 'A01746139@itesm.mx'
+    password = "sendEmail123"
+    msg.add_header('Content-Type', 'text/html')
+    msg.set_payload(email_content)
 
-#Conection with the email server
-server = smtplib.SMTP('smtp.gmail.com: 587')
-server.starttls()
+    #Conection with the email server
+    server = smtplib.SMTP('smtp.gmail.com: 587')
+    server.starttls()
 
-# Login Credentials for sending the mail
-server.login(msg['From'], password)
+    # Login Credentials for sending the mail
+    server.login(msg['From'], password)
 
-#Send email
-server.sendmail(msg['From'], [msg['To']], msg.as_string())
+    #Send email
+    server.sendmail(msg['From'], [msg['To']], msg.as_string())
+
+#TESTS
+challenge('account1')
+challenge('account2')
+challenge('account3')
+challenge('account4')
