@@ -13,7 +13,7 @@ _Docker is the only software required for the deployment of this project.
 
 If you dont have Docker installed, please go to:_
 
-*[Installing Docker](https://docs.docker.com/engine/install/)
+* [Installing Docker](https://docs.docker.com/engine/install/)
 
 ### Installing 🔧
 
@@ -49,10 +49,10 @@ docker run container-name
 
 _To test the code there are 4 .csv files that contains different kind of content_
 
-*[account1.csv] - Example of the .pdf with the problem.
-*[account2.csv] - Testing the behaviour with a bunch of data.
-*[account3.csv] - Testing adding more columns than the expected.
-*[account4.csv] - Testing adding more columns than the expected.
+* [account1.csv]() - Example of the .pdf with the problem.
+* [account2.csv]() - Testing the behaviour with a bunch of data.
+* [account3.csv]() - Testing adding more columns than the expected.
+* [account4.csv]() - Testing adding more columns than the expected.
 
 _The 4 files are tested when you run the docker container
 
@@ -60,9 +60,9 @@ _The 4 files are tested when you run the docker container
 _The input file must have the next columns:_
 
 ```
-*Id
-*Date
-*Transaction
+* Id
+* Date
+* Transaction
 ```
 _The info contained in the columns is essential for the correct behaviour of the code._
 
@@ -70,15 +70,15 @@ _The info contained in the columns is essential for the correct behaviour of the
 
 * Python (Libraries)
 ```
-*csv - Read the .csv files
-*smtplib - Sending the email
-*email.message - Email content
-*PyMySQL - Connection with the Data Base
+* csv - Read the .csv files
+* smtplib - Sending the email
+* email.message - Email content
+* PyMySQL - Connection with the Data Base
 ```
 * Docker - Testing Environment
-*HTML5 - Email content
-*MySQL - DataBase
-*AWS RDS - DataBase
+* HTML5 - Email content
+* MySQL - DataBase
+* AWS RDS - DataBase
 ## Versioning 📌
 
 [Git](https://git-scm.com/) was used for the version control.
